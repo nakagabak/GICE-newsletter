@@ -1,5 +1,7 @@
-import { GripVertical, Trash2, ImageIcon } from "lucide-react";
+import { GripVertical, Trash2, ImageIcon, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ObjectUploader } from "@/components/ObjectUploader";
+import type { UploadResult } from "@uppy/core";
 
 interface MediaBlockProps {
   id: string;
@@ -142,21 +144,48 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate 
                     }}>
                       Image URL:
                     </label>
-                    <input
-                      type="text"
-                      value={content.imageUrl || ''}
-                      onChange={(e) => onUpdate?.({ ...content, imageUrl: e.target.value })}
-                      placeholder="https://example.com/image.jpg"
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        fontFamily: 'Arial, sans-serif',
-                        fontSize: '13px',
-                        border: '1px solid #D4D4D4',
-                        borderRadius: '4px',
-                      }}
-                      data-testid={`input-image-url-${id}`}
-                    />
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        value={content.imageUrl || ''}
+                        onChange={(e) => onUpdate?.({ ...content, imageUrl: e.target.value })}
+                        placeholder="https://example.com/image.jpg"
+                        style={{
+                          flex: 1,
+                          padding: '8px',
+                          fontFamily: 'Arial, sans-serif',
+                          fontSize: '13px',
+                          border: '1px solid #D4D4D4',
+                          borderRadius: '4px',
+                        }}
+                        data-testid={`input-image-url-${id}`}
+                      />
+                      <ObjectUploader
+                        maxNumberOfFiles={1}
+                        maxFileSize={10485760}
+                        onGetUploadParameters={async () => {
+                          const response = await fetch('/api/objects/upload', { method: 'POST' });
+                          const { uploadURL } = await response.json();
+                          return { method: 'PUT' as const, url: uploadURL };
+                        }}
+                        onComplete={async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+                          const uploadedFile = result.successful?.[0];
+                          if (uploadedFile?.uploadURL) {
+                            const normalizeResponse = await fetch('/api/objects/normalize', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ url: uploadedFile.uploadURL }),
+                            });
+                            const { normalizedPath } = await normalizeResponse.json();
+                            onUpdate?.({ ...content, imageUrl: normalizedPath });
+                          }
+                        }}
+                        buttonClassName="h-9"
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Upload
+                      </ObjectUploader>
+                    </div>
                   </div>
                   
                   <div style={{ marginBottom: '12px' }}>

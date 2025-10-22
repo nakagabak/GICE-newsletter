@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { EmailBlock } from "@shared/schema";
+import { EmailBlock, type EmailTemplate } from "@shared/schema";
 import ComponentLibrary from "@/components/ComponentLibrary";
 import EmailCanvas from "@/components/EmailCanvas";
 import EmailToolbar from "@/components/EmailToolbar";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 
 const getDefaultContent = (type: string) => {
   switch (type) {
@@ -53,7 +55,39 @@ const getDefaultContent = (type: string) => {
 export default function EmailBuilder() {
   const [templateName, setTemplateName] = useState('GICE Newsletter - October 2025');
   const [blocks, setBlocks] = useState<EmailBlock[]>([]);
+  const [currentTemplateId, setCurrentTemplateId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const { data: templates } = useQuery<EmailTemplate[]>({
+    queryKey: ['/api/templates'],
+  });
+
+  const saveTemplateMutation = useMutation({
+    mutationFn: async () => {
+      let response: Response;
+      if (currentTemplateId) {
+        response = await apiRequest('PUT', `/api/templates/${currentTemplateId}`, { name: templateName, blocks });
+      } else {
+        response = await apiRequest('POST', '/api/templates', { name: templateName, blocks });
+      }
+      return (await response.json()) as EmailTemplate;
+    },
+    onSuccess: (data: EmailTemplate) => {
+      setCurrentTemplateId(data.id);
+      queryClient.invalidateQueries({ queryKey: ['/api/templates'] });
+      toast({
+        title: "Template saved",
+        description: `"${templateName}" has been saved successfully`,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save template",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleAddBlock = (type: string) => {
     const newBlock: EmailBlock = {
@@ -85,11 +119,26 @@ export default function EmailBuilder() {
   };
 
   const handleSave = () => {
-    console.log('Saving template:', { name: templateName, blocks });
-    
+    saveTemplateMutation.mutate();
+  };
+
+  const handleLoadTemplate = (template: EmailTemplate) => {
+    setTemplateName(template.name);
+    setBlocks(template.blocks);
+    setCurrentTemplateId(template.id);
     toast({
-      title: "Template saved",
-      description: `"${templateName}" has been saved successfully`,
+      title: "Template loaded",
+      description: `Loaded "${template.name}"`,
+    });
+  };
+
+  const handleNewTemplate = () => {
+    setTemplateName('New Template');
+    setBlocks([]);
+    setCurrentTemplateId(null);
+    toast({
+      title: "New template",
+      description: "Started a new email template",
     });
   };
 
@@ -116,6 +165,10 @@ export default function EmailBuilder() {
         onTemplateNameChange={setTemplateName}
         onSave={handleSave}
         onExport={handleExport}
+        onNew={handleNewTemplate}
+        templates={templates || []}
+        onLoadTemplate={handleLoadTemplate}
+        isSaving={saveTemplateMutation.isPending}
       />
       
       <div className="flex-1 flex overflow-hidden">
