@@ -6,6 +6,7 @@ interface FooterBlockProps {
   content: {
     organizationName: string;
     contactInfo?: string;
+    resourceLink?: string;
     unsubscribeText?: string;
   };
   isEditing?: boolean;
@@ -69,6 +70,24 @@ export default function FooterBlock({ id, content, isEditing, onDelete, onUpdate
                   data-testid={`footer-contact-${id}`}
                 >
                   {content.contactInfo}
+                </div>
+              )}
+              
+              {content.resourceLink && (
+                <div style={{ marginBottom: '16px' }}>
+                  <a
+                    href={content.resourceLink}
+                    style={{
+                      fontFamily: 'Arial, sans-serif',
+                      fontSize: '13px',
+                      color: '#0073E6',
+                      textDecoration: 'none',
+                      borderBottom: '1px solid #0073E6',
+                    }}
+                    data-testid={`footer-resource-${id}`}
+                  >
+                    GICE Program Resources
+                  </a>
                 </div>
               )}
               

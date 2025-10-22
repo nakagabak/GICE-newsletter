@@ -8,6 +8,7 @@ export default function FooterBlockExample() {
         content={{
           organizationName: 'GICE Program - Harvard Graduate School of Education',
           contactInfo: '13 Appian Way, Cambridge, MA 02138',
+          resourceLink: 'https://edmsupport.gse.harvard.edu/global-international-and-comparative-education',
           unsubscribeText: 'Unsubscribe | Update email preferences'
         }}
         isEditing={false}
