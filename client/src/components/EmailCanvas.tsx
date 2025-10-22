@@ -4,6 +4,7 @@ import TextBlock from "./email-blocks/TextBlock";
 import EventBlock from "./email-blocks/EventBlock";
 import AnnouncementBlock from "./email-blocks/AnnouncementBlock";
 import DividerBlock from "./email-blocks/DividerBlock";
+import MediaBlock from "./email-blocks/MediaBlock";
 import FooterBlock from "./email-blocks/FooterBlock";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -33,6 +34,8 @@ export default function EmailCanvas({ blocks, onUpdateBlock, onDeleteBlock }: Em
         return <AnnouncementBlock key={block.id} content={block.content as any} {...commonProps} />;
       case 'divider':
         return <DividerBlock key={block.id} {...commonProps} />;
+      case 'media':
+        return <MediaBlock key={block.id} content={block.content as any} {...commonProps} />;
       case 'footer':
         return <FooterBlock key={block.id} content={block.content as any} {...commonProps} />;
       default:

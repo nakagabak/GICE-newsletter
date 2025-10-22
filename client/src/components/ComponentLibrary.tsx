@@ -3,7 +3,8 @@ import {
   Type, 
   Calendar, 
   AlertCircle, 
-  Minus, 
+  Minus,
+  ImageIcon,
   FileText 
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -46,6 +47,12 @@ const blockTemplates: BlockTemplate[] = [
     label: 'Divider',
     icon: Minus,
     description: 'Horizontal line separator',
+  },
+  {
+    type: 'media',
+    label: 'Image/Video',
+    icon: ImageIcon,
+    description: 'Add images or video thumbnails',
   },
   {
     type: 'footer',

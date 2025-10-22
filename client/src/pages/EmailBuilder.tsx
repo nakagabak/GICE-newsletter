@@ -30,6 +30,14 @@ const getDefaultContent = (type: string) => {
         title: 'Important Notice',
         body: 'Announcement details...',
       };
+    case 'media':
+      return {
+        imageUrl: '',
+        altText: '',
+        caption: '',
+        linkUrl: '',
+        width: 'full',
+      };
     case 'footer':
       return {
         organizationName: 'GICE Program - Harvard Graduate School of Education',
@@ -210,6 +218,33 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
         </tr>
       </table>
     `,
+    media: (content) => {
+      if (!content.imageUrl) return '';
+      
+      const widthMap: Record<string, string> = {
+        full: '100%',
+        medium: '400px',
+        small: '250px',
+      };
+      const width = widthMap[content.width || 'full'];
+      
+      const imageHtml = `<img src="${content.imageUrl}" alt="${content.altText || 'Image'}" style="max-width: ${width}; width: 100%; height: auto; display: block; margin: 0 auto; border: none;" />`;
+      
+      return `
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff;">
+        <tr>
+          <td style="padding: 24px; text-align: center;">
+            ${content.linkUrl ? `<a href="${content.linkUrl}" target="_blank" rel="noopener noreferrer">${imageHtml}</a>` : imageHtml}
+            ${content.caption ? `
+              <p style="font-family: Arial, sans-serif; font-size: 13px; color: #737373; margin: 12px 0 0 0; font-style: italic;">
+                ${content.caption}
+              </p>
+            ` : ''}
+          </td>
+        </tr>
+      </table>
+    `;
+    },
     footer: (content) => `
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #262626;">
         <tr>

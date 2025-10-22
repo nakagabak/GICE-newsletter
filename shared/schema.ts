@@ -23,6 +23,7 @@ export type EmailBlockType =
   | 'event'
   | 'announcement'
   | 'divider'
+  | 'media'
   | 'footer';
 
 export interface EmailBlock {
