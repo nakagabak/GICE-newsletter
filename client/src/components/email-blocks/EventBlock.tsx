@@ -1,10 +1,9 @@
-import { GripVertical, Trash2, Upload } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface EventBlockProps {
   id: string;
   content: {
-    image?: string;
     title: string;
     date?: string;
     description: string;
@@ -40,39 +39,6 @@ export default function EventBlock({ id, content, isEditing, onDelete, onUpdate 
         <tbody>
           <tr>
             <td style={{ padding: '32px 24px' }}>
-              {content.image ? (
-                <img 
-                  src={content.image} 
-                  alt={content.title}
-                  style={{ 
-                    width: '100%', 
-                    height: 'auto',
-                    marginBottom: '16px',
-                    borderRadius: '4px',
-                  }}
-                />
-              ) : isEditing && (
-                <div 
-                  style={{
-                    width: '100%',
-                    height: '160px',
-                    backgroundColor: '#E5E5E5',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '16px',
-                    borderRadius: '4px',
-                    border: '2px dashed #A3A3A3',
-                  }}
-                  data-testid={`event-image-upload-${id}`}
-                >
-                  <div style={{ textAlign: 'center', color: '#737373' }}>
-                    <Upload style={{ width: '32px', height: '32px', margin: '0 auto 8px' }} />
-                    <div style={{ fontSize: '14px' }}>Upload image</div>
-                  </div>
-                </div>
-              )}
-              
               <div
                 contentEditable={isEditing}
                 suppressContentEditableWarning

@@ -230,7 +230,6 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F5F5F5;">
         <tr>
           <td style="padding: 32px 24px;">
-            ${content.image ? `<img src="${content.image}" alt="${content.title}" style="width: 100%; height: auto; margin-bottom: 16px; border-radius: 4px;" />` : ''}
             <h3 style="font-family: Georgia, serif; font-size: 18px; font-weight: 700; color: #262626; margin: 0 0 8px 0;">
               ${content.title}
             </h3>
