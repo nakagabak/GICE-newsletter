@@ -6,6 +6,8 @@ interface TextBlockProps {
   content: {
     title?: string;
     body: string;
+    linkUrl?: string;
+    linkText?: string;
   };
   isEditing?: boolean;
   onDelete?: () => void;
@@ -37,39 +39,117 @@ export default function TextBlock({ id, content, isEditing, onDelete, onUpdate }
           <tr>
             <td style={{ padding: '32px 24px' }}>
               {content.title && (
+                isEditing ? (
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => onUpdate?.({ ...content, title: e.currentTarget.innerHTML || '' })}
+                    dangerouslySetInnerHTML={{ __html: content.title }}
+                    style={{
+                      fontFamily: 'Georgia, serif',
+                      fontSize: '20px',
+                      fontWeight: 700,
+                      color: '#262626',
+                      marginBottom: '16px',
+                      outline: 'none',
+                    }}
+                    data-testid={`text-title-${id}`}
+                  />
+                ) : (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: content.title }}
+                    style={{
+                      fontFamily: 'Georgia, serif',
+                      fontSize: '20px',
+                      fontWeight: 700,
+                      color: '#262626',
+                      marginBottom: '16px',
+                    }}
+                    data-testid={`text-title-${id}`}
+                  />
+                )
+              )}
+              {isEditing ? (
                 <div
-                  contentEditable={isEditing}
+                  contentEditable
                   suppressContentEditableWarning
-                  onBlur={(e) => onUpdate?.({ ...content, title: e.currentTarget.textContent || '' })}
+                  onBlur={(e) => onUpdate?.({ ...content, body: e.currentTarget.innerHTML || '' })}
+                  dangerouslySetInnerHTML={{ __html: content.body }}
                   style={{
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '20px',
-                    fontWeight: 700,
-                    color: '#262626',
-                    marginBottom: '16px',
+                    fontFamily: 'Arial, sans-serif',
+                    fontSize: '14px',
+                    lineHeight: '1.6',
+                    color: '#404040',
                     outline: 'none',
                   }}
-                  data-testid={`text-title-${id}`}
-                >
-                  {content.title}
+                  data-testid={`text-body-${id}`}
+                />
+              ) : (
+                <div
+                  dangerouslySetInnerHTML={{ __html: content.body }}
+                  style={{
+                    fontFamily: 'Arial, sans-serif',
+                    fontSize: '14px',
+                    lineHeight: '1.6',
+                    color: '#404040',
+                  }}
+                  data-testid={`text-body-${id}`}
+                />
+              )}
+              
+              {isEditing && (
+                <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <input
+                    type="text"
+                    value={content.linkText || ''}
+                    onChange={(e) => onUpdate?.({ ...content, linkText: e.target.value })}
+                    placeholder="Link text (e.g., Learn More →)"
+                    style={{
+                      fontFamily: 'Arial, sans-serif',
+                      fontSize: '14px',
+                      padding: '8px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '4px',
+                    }}
+                    data-testid={`input-link-text-${id}`}
+                  />
+                  <input
+                    type="text"
+                    value={content.linkUrl || ''}
+                    onChange={(e) => onUpdate?.({ ...content, linkUrl: e.target.value })}
+                    placeholder="Link URL (e.g., https://example.com)"
+                    style={{
+                      fontFamily: 'Arial, sans-serif',
+                      fontSize: '14px',
+                      padding: '8px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '4px',
+                    }}
+                    data-testid={`input-link-url-${id}`}
+                  />
                 </div>
               )}
-              <div
-                contentEditable={isEditing}
-                suppressContentEditableWarning
-                onBlur={(e) => onUpdate?.({ ...content, body: e.currentTarget.textContent || '' })}
-                style={{
-                  fontFamily: 'Arial, sans-serif',
-                  fontSize: '14px',
-                  lineHeight: '1.6',
-                  color: '#404040',
-                  outline: 'none',
-                  whiteSpace: 'pre-wrap',
-                }}
-                data-testid={`text-body-${id}`}
-              >
-                {content.body}
-              </div>
+              
+              {!isEditing && content.linkText && content.linkUrl && (
+                <div style={{ marginTop: '16px' }}>
+                  <a
+                    href={content.linkUrl}
+                    style={{
+                      display: 'inline-block',
+                      fontFamily: 'Arial, sans-serif',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#A51C30',
+                      textDecoration: 'none',
+                      padding: '8px 16px',
+                      border: '1px solid #A51C30',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    {content.linkText}
+                  </a>
+                </div>
+              )}
             </td>
           </tr>
         </tbody>

@@ -11,13 +11,15 @@ const getDefaultContent = (type: string) => {
   switch (type) {
     case 'header':
       return {
-        title: 'Newsletter Title',
+        title: 'GICE Bi-Weekly Newsletter',
         subtitle: 'Subtitle or date',
       };
     case 'text':
       return {
         title: 'Section Title',
         body: 'Add your content here...',
+        linkUrl: '#',
+        linkText: 'Learn More →',
       };
     case 'event':
       return {
@@ -210,9 +212,16 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
                 ${content.title}
               </h2>
             ` : ''}
-            <p style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #404040; margin: 0; white-space: pre-wrap;">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #404040; margin: 0;">
               ${content.body}
-            </p>
+            </div>
+            ${content.linkText && content.linkUrl ? `
+              <div style="margin-top: 16px;">
+                <a href="${content.linkUrl}" style="display: inline-block; font-family: Arial, sans-serif; font-size: 14px; font-weight: 600; color: #A51C30; text-decoration: none; padding: 8px 16px; border: 1px solid #A51C30; border-radius: 4px;">
+                  ${content.linkText}
+                </a>
+              </div>
+            ` : ''}
           </td>
         </tr>
       </table>
