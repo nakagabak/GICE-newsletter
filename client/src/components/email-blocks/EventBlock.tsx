@@ -93,7 +93,40 @@ export default function EventBlock({ id, content, isEditing, onDelete, onUpdate 
                 {content.description}
               </div>
               
-              {content.link && (
+              {isEditing && (
+                <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <input
+                    type="text"
+                    value={content.linkText || ''}
+                    onChange={(e) => onUpdate?.({ ...content, linkText: e.target.value })}
+                    placeholder="Link text (e.g., Learn More →)"
+                    style={{
+                      fontFamily: 'Arial, sans-serif',
+                      fontSize: '14px',
+                      padding: '8px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '4px',
+                    }}
+                    data-testid={`input-event-link-text-${id}`}
+                  />
+                  <input
+                    type="text"
+                    value={content.link || ''}
+                    onChange={(e) => onUpdate?.({ ...content, link: e.target.value })}
+                    placeholder="Link URL (e.g., https://example.com)"
+                    style={{
+                      fontFamily: 'Arial, sans-serif',
+                      fontSize: '14px',
+                      padding: '8px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '4px',
+                    }}
+                    data-testid={`input-event-link-url-${id}`}
+                  />
+                </div>
+              )}
+              
+              {!isEditing && content.linkText && content.link && (
                 <a
                   href={content.link}
                   style={{
@@ -107,7 +140,7 @@ export default function EventBlock({ id, content, isEditing, onDelete, onUpdate 
                   }}
                   data-testid={`event-link-${id}`}
                 >
-                  {content.linkText || 'Learn More →'}
+                  {content.linkText}
                 </a>
               )}
             </td>

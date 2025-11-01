@@ -44,10 +44,9 @@ const getDefaultContent = (type: string) => {
       };
     case 'footer':
       return {
-        organizationName: 'GICE Program - Harvard Graduate School of Education',
+        organizationName: 'Global, International, and Comparative Education (GICE) Concentration',
         contactInfo: '13 Appian Way, Cambridge, MA 02138',
         resourceLink: 'https://edmsupport.gse.harvard.edu/global-international-and-comparative-education',
-        unsubscribeText: 'Unsubscribe | Update email preferences',
       };
     default:
       return {};
@@ -319,15 +318,12 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
               </p>
             ` : ''}
             ${content.resourceLink ? `
-              <p style="margin: 0 0 16px 0;">
+              <p style="margin: 0;">
                 <a href="${content.resourceLink}" style="font-family: Arial, sans-serif; font-size: 13px; color: #0073E6; text-decoration: none; border-bottom: 1px solid #0073E6;">
                   GICE Program Resources
                 </a>
               </p>
             ` : ''}
-            <p style="font-family: Arial, sans-serif; font-size: 12px; color: #737373; margin: 0;">
-              ${content.unsubscribeText || 'Unsubscribe | Update preferences'}
-            </p>
           </td>
         </tr>
       </table>

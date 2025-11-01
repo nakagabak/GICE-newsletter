@@ -7,7 +7,6 @@ interface FooterBlockProps {
     organizationName: string;
     contactInfo?: string;
     resourceLink?: string;
-    unsubscribeText?: string;
   };
   isEditing?: boolean;
   onDelete?: () => void;
@@ -74,7 +73,7 @@ export default function FooterBlock({ id, content, isEditing, onDelete, onUpdate
               )}
               
               {content.resourceLink && (
-                <div style={{ marginBottom: '16px' }}>
+                <div>
                   <a
                     href={content.resourceLink}
                     style={{
@@ -90,21 +89,6 @@ export default function FooterBlock({ id, content, isEditing, onDelete, onUpdate
                   </a>
                 </div>
               )}
-              
-              <div
-                contentEditable={isEditing}
-                suppressContentEditableWarning
-                onBlur={(e) => onUpdate?.({ ...content, unsubscribeText: e.currentTarget.textContent || '' })}
-                style={{
-                  fontFamily: 'Arial, sans-serif',
-                  fontSize: '12px',
-                  color: '#737373',
-                  outline: 'none',
-                }}
-                data-testid={`footer-unsubscribe-${id}`}
-              >
-                {content.unsubscribeText || 'Unsubscribe | Update preferences'}
-              </div>
             </td>
           </tr>
         </tbody>
