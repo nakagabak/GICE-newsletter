@@ -119,6 +119,26 @@ export default function EmailBuilder() {
     },
   });
 
+  const deleteTemplateMutation = useMutation({
+    mutationFn: async (templateId: string) => {
+      await apiRequest('DELETE', `/api/templates/${templateId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/templates'] });
+      toast({
+        title: "Template deleted",
+        description: "The template has been removed",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete template",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleAddBlock = (type: string) => {
     const newBlock: EmailBlock = {
       id: `${type}-${Date.now()}`,
@@ -180,6 +200,15 @@ export default function EmailBuilder() {
     });
   };
 
+  const handleDeleteTemplate = (templateId: string) => {
+    if (templateId === currentTemplateId) {
+      setTemplateName('New Template');
+      setBlocks([]);
+      setCurrentTemplateId(null);
+    }
+    deleteTemplateMutation.mutate(templateId);
+  };
+
   const handleExport = () => {
     const html = generateEmailHTML(blocks);
     const blob = new Blob([html], { type: 'text/html' });
@@ -220,6 +249,7 @@ export default function EmailBuilder() {
         onNew={handleNewTemplate}
         templates={templates || []}
         onLoadTemplate={handleLoadTemplate}
+        onDeleteTemplate={handleDeleteTemplate}
         isSaving={saveTemplateMutation.isPending}
         isSavingDraft={saveDraftMutation.isPending}
         isSending={false}

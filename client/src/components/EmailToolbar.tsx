@@ -1,4 +1,4 @@
-import { Download, Save, FileText, Plus, FolderOpen, FilePenLine, Send } from "lucide-react";
+import { Download, Save, FileText, Plus, FolderOpen, FilePenLine, Send, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ interface EmailToolbarProps {
   onNew: () => void;
   templates: EmailTemplate[];
   onLoadTemplate: (template: EmailTemplate) => void;
+  onDeleteTemplate: (templateId: string) => void;
   isSaving?: boolean;
   isSavingDraft?: boolean;
   isSending?: boolean;
@@ -37,6 +38,7 @@ export default function EmailToolbar({
   onNew,
   templates,
   onLoadTemplate,
+  onDeleteTemplate,
   isSaving,
   isSavingDraft,
   isSending
@@ -82,19 +84,34 @@ export default function EmailToolbar({
                   key={template.id}
                   onClick={() => onLoadTemplate(template)}
                   data-testid={`template-${template.id}`}
+                  className="cursor-pointer"
                 >
-                  <div className="flex flex-col gap-1 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{template.name}</span>
-                      {template.isDraft && (
-                        <Badge variant="secondary" className="text-xs" data-testid={`badge-draft-${template.id}`}>
-                          Draft
-                        </Badge>
-                      )}
+                  <div className="flex items-center gap-2 flex-1">
+                    <div className="flex flex-col gap-1 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{template.name}</span>
+                        {template.isDraft && (
+                          <Badge variant="secondary" className="text-xs" data-testid={`badge-draft-${template.id}`}>
+                            Draft
+                          </Badge>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        Updated {format(new Date(template.updatedAt), "MMM d, yyyy 'at' h:mm a")}
+                      </span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      Updated {format(new Date(template.updatedAt), "MMM d, yyyy 'at' h:mm a")}
-                    </span>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8 opacity-70 hover:opacity-100"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteTemplate(template.id);
+                      }}
+                      data-testid={`button-delete-${template.id}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </DropdownMenuItem>
               ))
