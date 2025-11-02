@@ -4,6 +4,7 @@ import ComponentLibrary from "@/components/ComponentLibrary";
 import EmailCanvas from "@/components/EmailCanvas";
 import EmailToolbar from "@/components/EmailToolbar";
 import { SendEmailDialog } from "@/components/SendEmailDialog";
+import PreviewDialog from "@/components/PreviewDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -59,6 +60,7 @@ export default function EmailBuilder() {
   const [blocks, setBlocks] = useState<EmailBlock[]>([]);
   const [currentTemplateId, setCurrentTemplateId] = useState<string | null>(null);
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const { data: templates } = useQuery<EmailTemplate[]>({
@@ -237,6 +239,10 @@ export default function EmailBuilder() {
     setSendDialogOpen(true);
   };
 
+  const handlePreview = () => {
+    setPreviewDialogOpen(true);
+  };
+
   return (
     <div className="h-screen flex flex-col">
       <EmailToolbar
@@ -246,6 +252,7 @@ export default function EmailBuilder() {
         onSaveDraft={handleSaveDraft}
         onExport={handleExport}
         onSend={handleSendEmail}
+        onPreview={handlePreview}
         onNew={handleNewTemplate}
         templates={templates || []}
         onLoadTemplate={handleLoadTemplate}
@@ -270,6 +277,13 @@ export default function EmailBuilder() {
         onOpenChange={setSendDialogOpen}
         htmlBody={generateEmailHTML(blocks)}
         defaultSubject={templateName}
+      />
+      
+      <PreviewDialog
+        open={previewDialogOpen}
+        onOpenChange={setPreviewDialogOpen}
+        html={generateEmailHTML(blocks)}
+        templateName={templateName}
       />
     </div>
   );

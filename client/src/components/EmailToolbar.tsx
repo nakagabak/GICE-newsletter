@@ -1,4 +1,4 @@
-import { Download, Save, FileText, Plus, FolderOpen, FilePenLine, Send, Trash2 } from "lucide-react";
+import { Download, Save, FileText, Plus, FolderOpen, FilePenLine, Send, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,7 @@ interface EmailToolbarProps {
   onSaveDraft: () => void;
   onExport: () => void;
   onSend: () => void;
+  onPreview: () => void;
   onNew: () => void;
   templates: EmailTemplate[];
   onLoadTemplate: (template: EmailTemplate) => void;
@@ -35,6 +36,7 @@ export default function EmailToolbar({
   onSaveDraft,
   onExport,
   onSend,
+  onPreview,
   onNew,
   templates,
   onLoadTemplate,
@@ -138,6 +140,14 @@ export default function EmailToolbar({
         >
           <Save className="h-4 w-4 mr-2" />
           {isSaving ? 'Saving...' : 'Save'}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={onPreview}
+          data-testid="button-preview"
+        >
+          <Eye className="h-4 w-4 mr-2" />
+          Preview
         </Button>
         <Button
           variant="default"
