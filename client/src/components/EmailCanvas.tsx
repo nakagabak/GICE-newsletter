@@ -7,39 +7,104 @@ import DividerBlock from "./email-blocks/DividerBlock";
 import MediaBlock from "./email-blocks/MediaBlock";
 import FooterBlock from "./email-blocks/FooterBlock";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface EmailCanvasProps {
   blocks: EmailBlock[];
   onUpdateBlock: (id: string, content: any) => void;
   onDeleteBlock: (id: string) => void;
+  onReorderBlocks: (blocks: EmailBlock[]) => void;
 }
 
-export default function EmailCanvas({ blocks, onUpdateBlock, onDeleteBlock }: EmailCanvasProps) {
-  const renderBlock = (block: EmailBlock) => {
-    const commonProps = {
-      id: block.id,
-      isEditing: true,
-      onDelete: () => onDeleteBlock(block.id),
-      onUpdate: (content: any) => onUpdateBlock(block.id, content),
-    };
+function SortableBlock({ block, onUpdateBlock, onDeleteBlock }: { 
+  block: EmailBlock; 
+  onUpdateBlock: (id: string, content: any) => void;
+  onDeleteBlock: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: block.id });
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const commonProps = {
+    id: block.id,
+    isEditing: true,
+    onDelete: () => onDeleteBlock(block.id),
+    onUpdate: (content: any) => onUpdateBlock(block.id, content),
+    dragHandleProps: { ...attributes, ...listeners },
+  };
+
+  const renderBlock = () => {
     switch (block.type) {
       case 'header':
-        return <HeaderBlock key={block.id} content={block.content as any} {...commonProps} />;
+        return <HeaderBlock content={block.content as any} {...commonProps} />;
       case 'text':
-        return <TextBlock key={block.id} content={block.content as any} {...commonProps} />;
+        return <TextBlock content={block.content as any} {...commonProps} />;
       case 'event':
-        return <EventBlock key={block.id} content={block.content as any} {...commonProps} />;
+        return <EventBlock content={block.content as any} {...commonProps} />;
       case 'announcement':
-        return <AnnouncementBlock key={block.id} content={block.content as any} {...commonProps} />;
+        return <AnnouncementBlock content={block.content as any} {...commonProps} />;
       case 'divider':
-        return <DividerBlock key={block.id} {...commonProps} />;
+        return <DividerBlock {...commonProps} />;
       case 'media':
-        return <MediaBlock key={block.id} content={block.content as any} {...commonProps} />;
+        return <MediaBlock content={block.content as any} {...commonProps} />;
       case 'footer':
-        return <FooterBlock key={block.id} content={block.content as any} {...commonProps} />;
+        return <FooterBlock content={block.content as any} {...commonProps} />;
       default:
         return null;
+    }
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {renderBlock()}
+    </div>
+  );
+}
+
+export default function EmailCanvas({ blocks, onUpdateBlock, onDeleteBlock, onReorderBlocks }: EmailCanvasProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = blocks.findIndex((block) => block.id === active.id);
+      const newIndex = blocks.findIndex((block) => block.id === over.id);
+      
+      const reorderedBlocks = arrayMove(blocks, oldIndex, newIndex);
+      onReorderBlocks(reorderedBlocks);
     }
   };
 
@@ -58,7 +123,25 @@ export default function EmailCanvas({ blocks, onUpdateBlock, onDeleteBlock }: Em
               </div>
             ) : (
               <div className="pl-12">
-                {blocks.map(renderBlock)}
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={blocks.map(b => b.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {blocks.map((block) => (
+                      <SortableBlock
+                        key={block.id}
+                        block={block}
+                        onUpdateBlock={onUpdateBlock}
+                        onDeleteBlock={onDeleteBlock}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
               </div>
             )}
           </div>

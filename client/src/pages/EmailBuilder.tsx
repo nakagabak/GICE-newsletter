@@ -146,6 +146,10 @@ export default function EmailBuilder() {
     });
   };
 
+  const handleReorderBlocks = (reorderedBlocks: EmailBlock[]) => {
+    setBlocks(reorderedBlocks);
+  };
+
   const handleSave = () => {
     saveTemplateMutation.mutate();
   };
@@ -211,6 +215,7 @@ export default function EmailBuilder() {
           blocks={blocks}
           onUpdateBlock={handleUpdateBlock}
           onDeleteBlock={handleDeleteBlock}
+          onReorderBlocks={handleReorderBlocks}
         />
       </div>
     </div>

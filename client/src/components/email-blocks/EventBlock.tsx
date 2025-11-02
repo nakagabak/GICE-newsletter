@@ -13,14 +13,21 @@ interface EventBlockProps {
   isEditing?: boolean;
   onDelete?: () => void;
   onUpdate?: (content: any) => void;
+  dragHandleProps?: any;
 }
 
-export default function EventBlock({ id, content, isEditing, onDelete, onUpdate }: EventBlockProps) {
+export default function EventBlock({ id, content, isEditing, onDelete, onUpdate, dragHandleProps }: EventBlockProps) {
   return (
     <div className="group relative">
       {isEditing && (
         <div className="absolute -left-10 top-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button size="icon" variant="ghost" className="h-6 w-6 cursor-grab" data-testid={`drag-event-${id}`}>
+          <Button 
+            size="icon" 
+            variant="ghost" 
+            className="h-6 w-6 cursor-grab" 
+            data-testid={`drag-event-${id}`}
+            {...dragHandleProps}
+          >
             <GripVertical className="h-4 w-4" />
           </Button>
           <Button 

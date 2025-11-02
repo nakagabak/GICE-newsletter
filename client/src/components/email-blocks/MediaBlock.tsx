@@ -15,9 +15,10 @@ interface MediaBlockProps {
   isEditing?: boolean;
   onDelete?: () => void;
   onUpdate?: (content: any) => void;
+  dragHandleProps?: any;
 }
 
-export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate }: MediaBlockProps) {
+export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate, dragHandleProps }: MediaBlockProps) {
   const widthMap = {
     full: '100%',
     medium: '400px',
@@ -30,7 +31,11 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate 
     <div className="group relative">
       {isEditing && (
         <div className="absolute -left-12 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1 z-10">
-          <div className="p-1 bg-background border rounded cursor-move">
+          <div 
+            className="p-1 bg-background border rounded cursor-move"
+            {...dragHandleProps}
+            data-testid={`drag-media-${id}`}
+          >
             <GripVertical className="h-4 w-4" />
           </div>
           <Button
