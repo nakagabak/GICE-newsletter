@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertEmailTemplateSchema } from "@shared/schema";
 import { z } from "zod";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import { sendEmail } from "./outlook";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Object Storage routes
@@ -119,6 +120,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting template:", error);
       res.status(500).json({ error: "Failed to delete template" });
+    }
+  });
+
+  // Send Email route
+  app.post("/api/send-email", async (req, res) => {
+    try {
+      const { to, subject, htmlBody } = req.body;
+      
+      if (!to || !Array.isArray(to) || to.length === 0) {
+        res.status(400).json({ error: "Recipient email addresses are required" });
+        return;
+      }
+      
+      if (!subject) {
+        res.status(400).json({ error: "Email subject is required" });
+        return;
+      }
+      
+      if (!htmlBody) {
+        res.status(400).json({ error: "Email body is required" });
+        return;
+      }
+
+      await sendEmail(to, subject, htmlBody);
+      res.json({ success: true, message: "Email sent successfully" });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      res.status(500).json({ error: "Failed to send email" });
     }
   });
 
