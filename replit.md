@@ -98,3 +98,8 @@ Preferred communication style: Simple, everyday language.
 - Inline styles (no external CSS) for email content
 - Email-safe fonts: Georgia (serif headings), Arial/Helvetica (body text)
 - Harvard Crimson brand color (#A51C30) for accents and borders
+
+**Email Integration**
+- User dismissed Resend integration setup
+- Email sending functionality requires manual setup with user-provided credentials
+- Awaiting user decision on which email service to use (Resend, SendGrid, Gmail, Outlook, or custom SMTP)
