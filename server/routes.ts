@@ -124,30 +124,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Send Email route
+  const sendEmailSchema = z.object({
+    to: z.array(z.string().email()).min(1, "At least one recipient is required"),
+    subject: z.string().min(1, "Subject is required").transform(s => s.trim()),
+    htmlBody: z.string().min(1, "Email body is required").transform(s => s.trim()),
+  });
+
   app.post("/api/send-email", async (req, res) => {
     try {
-      const { to, subject, htmlBody } = req.body;
+      const validatedData = sendEmailSchema.parse(req.body);
       
-      if (!to || !Array.isArray(to) || to.length === 0) {
-        res.status(400).json({ error: "Recipient email addresses are required" });
-        return;
-      }
-      
-      if (!subject) {
-        res.status(400).json({ error: "Email subject is required" });
-        return;
-      }
-      
-      if (!htmlBody) {
-        res.status(400).json({ error: "Email body is required" });
-        return;
-      }
-
-      await sendEmail(to, subject, htmlBody);
+      await sendEmail(validatedData.to, validatedData.subject, validatedData.htmlBody);
       res.json({ success: true, message: "Email sent successfully" });
     } catch (error) {
-      console.error("Error sending email:", error);
-      res.status(500).json({ error: "Failed to send email" });
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ error: "Invalid email data", details: error.errors });
+      } else {
+        console.error("Error sending email:", error);
+        const errorMessage = error instanceof Error ? error.message : "Failed to send email";
+        res.status(500).json({ error: errorMessage });
+      }
     }
   });
 

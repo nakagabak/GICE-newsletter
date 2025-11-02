@@ -3,6 +3,7 @@ import { EmailBlock, type EmailTemplate } from "@shared/schema";
 import ComponentLibrary from "@/components/ComponentLibrary";
 import EmailCanvas from "@/components/EmailCanvas";
 import EmailToolbar from "@/components/EmailToolbar";
+import { SendEmailDialog } from "@/components/SendEmailDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -57,6 +58,7 @@ export default function EmailBuilder() {
   const [templateName, setTemplateName] = useState('GICE Newsletter - October 2025');
   const [blocks, setBlocks] = useState<EmailBlock[]>([]);
   const [currentTemplateId, setCurrentTemplateId] = useState<string | null>(null);
+  const [sendDialogOpen, setSendDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const { data: templates } = useQuery<EmailTemplate[]>({
@@ -194,6 +196,18 @@ export default function EmailBuilder() {
     });
   };
 
+  const handleSendEmail = () => {
+    if (blocks.length === 0) {
+      toast({
+        title: "No content",
+        description: "Please add some content blocks before sending",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSendDialogOpen(true);
+  };
+
   return (
     <div className="h-screen flex flex-col">
       <EmailToolbar
@@ -202,7 +216,7 @@ export default function EmailBuilder() {
         onSave={handleSave}
         onSaveDraft={handleSaveDraft}
         onExport={handleExport}
-        onSend={() => {}}
+        onSend={handleSendEmail}
         onNew={handleNewTemplate}
         templates={templates || []}
         onLoadTemplate={handleLoadTemplate}
@@ -220,6 +234,13 @@ export default function EmailBuilder() {
           onReorderBlocks={handleReorderBlocks}
         />
       </div>
+
+      <SendEmailDialog
+        open={sendDialogOpen}
+        onOpenChange={setSendDialogOpen}
+        htmlBody={generateEmailHTML(blocks)}
+        defaultSubject={templateName}
+      />
     </div>
   );
 }
