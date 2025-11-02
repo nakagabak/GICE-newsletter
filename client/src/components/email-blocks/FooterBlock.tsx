@@ -85,7 +85,7 @@ export default function FooterBlock({ id, content, isEditing, onDelete, onUpdate
                     }}
                     data-testid={`footer-resource-${id}`}
                   >
-                    GICE Program Resources
+                    GICE Concentration Resources
                   </a>
                 </div>
               )}

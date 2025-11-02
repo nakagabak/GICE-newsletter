@@ -111,6 +111,8 @@ export default function EventBlock({ id, content, isEditing, onDelete, onUpdate 
                         padding: '8px',
                         border: '1px solid #e5e5e5',
                         borderRadius: '4px',
+                        color: '#262626',
+                        backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-event-link-text-${id}`}
                     />
@@ -131,6 +133,8 @@ export default function EventBlock({ id, content, isEditing, onDelete, onUpdate 
                         padding: '8px',
                         border: '1px solid #e5e5e5',
                         borderRadius: '4px',
+                        color: '#262626',
+                        backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-event-link-url-${id}`}
                     />

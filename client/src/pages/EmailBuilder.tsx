@@ -320,7 +320,7 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
             ${content.resourceLink ? `
               <p style="margin: 0;">
                 <a href="${content.resourceLink}" style="font-family: Arial, sans-serif; font-size: 13px; color: #0073E6; text-decoration: none; border-bottom: 1px solid #0073E6;">
-                  GICE Program Resources
+                  GICE Concentration Resources
                 </a>
               </p>
             ` : ''}

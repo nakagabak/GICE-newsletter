@@ -157,6 +157,8 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate 
                           fontSize: '13px',
                           border: '1px solid #D4D4D4',
                           borderRadius: '4px',
+                          color: '#262626',
+                          backgroundColor: '#ffffff',
                         }}
                         data-testid={`input-image-url-${id}`}
                       />
@@ -211,6 +213,8 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate 
                         fontSize: '13px',
                         border: '1px solid #D4D4D4',
                         borderRadius: '4px',
+                        color: '#262626',
+                        backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-alt-text-${id}`}
                     />
@@ -239,6 +243,8 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate 
                         fontSize: '13px',
                         border: '1px solid #D4D4D4',
                         borderRadius: '4px',
+                        color: '#262626',
+                        backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-link-url-${id}`}
                     />
@@ -267,6 +273,8 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate 
                         fontSize: '13px',
                         border: '1px solid #D4D4D4',
                         borderRadius: '4px',
+                        color: '#262626',
+                        backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-caption-${id}`}
                     />

@@ -115,6 +115,8 @@ export default function TextBlock({ id, content, isEditing, onDelete, onUpdate }
                         padding: '8px',
                         border: '1px solid #e5e5e5',
                         borderRadius: '4px',
+                        color: '#262626',
+                        backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-link-text-${id}`}
                     />
@@ -135,6 +137,8 @@ export default function TextBlock({ id, content, isEditing, onDelete, onUpdate }
                         padding: '8px',
                         border: '1px solid #e5e5e5',
                         borderRadius: '4px',
+                        color: '#262626',
+                        backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-link-url-${id}`}
                     />
