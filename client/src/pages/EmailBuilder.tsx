@@ -246,6 +246,10 @@ export default function EmailBuilder() {
 }
 
 function generateEmailHTML(blocks: EmailBlock[]): string {
+  const convertNewlinesToBr = (text: string | undefined) => {
+    return text ? text.replace(/\n/g, '<br>') : '';
+  };
+
   const blockHTMLMap: Record<string, (content: any) => string> = {
     header: (content) => `
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff;">
@@ -273,7 +277,7 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
               </h2>
             ` : ''}
             <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #404040; margin: 0;">
-              ${content.body}
+              ${convertNewlinesToBr(content.body)}
             </div>
             ${content.linkText && content.linkUrl ? `
               <div style="margin-top: 16px;">
@@ -299,7 +303,7 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
               </p>
             ` : ''}
             <p style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #404040; margin: 0 0 16px 0;">
-              ${content.description}
+              ${convertNewlinesToBr(content.description)}
             </p>
             ${content.link ? `
               <a href="${content.link}" style="display: inline-block; font-family: Arial, sans-serif; font-size: 14px; font-weight: 600; color: #0073E6; text-decoration: none; border-bottom: 1px solid #0073E6;">
@@ -321,7 +325,7 @@ function generateEmailHTML(blocks: EmailBlock[]): string {
                     ${content.title}
                   </h3>
                   <p style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #404040; margin: 0;">
-                    ${content.body}
+                    ${convertNewlinesToBr(content.body)}
                   </p>
                 </td>
               </tr>
