@@ -207,6 +207,7 @@ export default function EmailBuilder() {
         onLoadTemplate={handleLoadTemplate}
         isSaving={saveTemplateMutation.isPending}
         isSavingDraft={saveDraftMutation.isPending}
+        blocks={blocks}
       />
       
       <div className="flex-1 flex overflow-hidden">
