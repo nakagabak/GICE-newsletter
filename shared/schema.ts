@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, jsonb, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -21,6 +21,7 @@ export const emailTemplates = pgTable("email_templates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   blocks: jsonb("blocks").notNull().$type<EmailBlock[]>(),
+  isDraft: boolean("is_draft").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -29,6 +30,9 @@ export const insertEmailTemplateSchema = createInsertSchema(emailTemplates).omit
   id: true,
   createdAt: true,
   updatedAt: true,
+  isDraft: true,
+}).extend({
+  isDraft: z.boolean().optional(),
 });
 
 export type InsertEmailTemplate = z.infer<typeof insertEmailTemplateSchema>;

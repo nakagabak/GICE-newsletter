@@ -67,9 +67,9 @@ export default function EmailBuilder() {
     mutationFn: async () => {
       let response: Response;
       if (currentTemplateId) {
-        response = await apiRequest('PUT', `/api/templates/${currentTemplateId}`, { name: templateName, blocks });
+        response = await apiRequest('PUT', `/api/templates/${currentTemplateId}`, { name: templateName, blocks, isDraft: false });
       } else {
-        response = await apiRequest('POST', '/api/templates', { name: templateName, blocks });
+        response = await apiRequest('POST', '/api/templates', { name: templateName, blocks, isDraft: false });
       }
       return (await response.json()) as EmailTemplate;
     },
@@ -85,6 +85,33 @@ export default function EmailBuilder() {
       toast({
         title: "Error",
         description: "Failed to save template",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const saveDraftMutation = useMutation({
+    mutationFn: async () => {
+      let response: Response;
+      if (currentTemplateId) {
+        response = await apiRequest('PUT', `/api/templates/${currentTemplateId}`, { name: templateName, blocks, isDraft: true });
+      } else {
+        response = await apiRequest('POST', '/api/templates', { name: templateName, blocks, isDraft: true });
+      }
+      return (await response.json()) as EmailTemplate;
+    },
+    onSuccess: (data: EmailTemplate) => {
+      setCurrentTemplateId(data.id);
+      queryClient.invalidateQueries({ queryKey: ['/api/templates'] });
+      toast({
+        title: "Draft saved",
+        description: `"${templateName}" has been saved as a draft`,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save draft",
         variant: "destructive",
       });
     },
@@ -121,6 +148,10 @@ export default function EmailBuilder() {
 
   const handleSave = () => {
     saveTemplateMutation.mutate();
+  };
+
+  const handleSaveDraft = () => {
+    saveDraftMutation.mutate();
   };
 
   const handleLoadTemplate = (template: EmailTemplate) => {
@@ -165,11 +196,13 @@ export default function EmailBuilder() {
         templateName={templateName}
         onTemplateNameChange={setTemplateName}
         onSave={handleSave}
+        onSaveDraft={handleSaveDraft}
         onExport={handleExport}
         onNew={handleNewTemplate}
         templates={templates || []}
         onLoadTemplate={handleLoadTemplate}
         isSaving={saveTemplateMutation.isPending}
+        isSavingDraft={saveDraftMutation.isPending}
       />
       
       <div className="flex-1 flex overflow-hidden">
