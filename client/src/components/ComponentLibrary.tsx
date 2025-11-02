@@ -50,15 +50,15 @@ const blockTemplates: BlockTemplate[] = [
   },
   {
     type: 'media',
-    label: 'Image/Video',
+    label: 'Image',
     icon: ImageIcon,
-    description: 'Add images or video thumbnails',
+    description: 'Add images',
   },
   {
     type: 'footer',
     label: 'Footer',
     icon: FileText,
-    description: 'Contact info and unsubscribe',
+    description: 'Footer information',
   },
 ];
 

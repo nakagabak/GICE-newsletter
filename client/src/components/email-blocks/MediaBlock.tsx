@@ -7,7 +7,6 @@ interface MediaBlockProps {
     imageUrl?: string;
     altText?: string;
     caption?: string;
-    linkUrl?: string;
     width?: 'full' | 'medium' | 'small';
   };
   isEditing?: boolean;
@@ -61,37 +60,19 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate,
             <td style={{ padding: '24px', textAlign: 'center' }}>
               {content.imageUrl ? (
                 <div>
-                  {content.linkUrl ? (
-                    <a href={content.linkUrl} target="_blank" rel="noopener noreferrer">
-                      <img
-                        src={content.imageUrl}
-                        alt={content.altText || 'Image'}
-                        style={{
-                          maxWidth: width,
-                          width: '100%',
-                          height: 'auto',
-                          display: 'block',
-                          margin: '0 auto',
-                          border: 'none',
-                        }}
-                        data-testid={`media-image-${id}`}
-                      />
-                    </a>
-                  ) : (
-                    <img
-                      src={content.imageUrl}
-                      alt={content.altText || 'Image'}
-                      style={{
-                        maxWidth: width,
-                        width: '100%',
-                        height: 'auto',
-                        display: 'block',
-                        margin: '0 auto',
-                        border: 'none',
-                      }}
-                      data-testid={`media-image-${id}`}
-                    />
-                  )}
+                  <img
+                    src={content.imageUrl}
+                    alt={content.altText || 'Image'}
+                    style={{
+                      maxWidth: width,
+                      width: '100%',
+                      height: 'auto',
+                      display: 'block',
+                      margin: '0 auto',
+                      border: 'none',
+                    }}
+                    data-testid={`media-image-${id}`}
+                  />
                   
                   {content.caption && (
                     <div
@@ -193,36 +174,6 @@ export default function MediaBlock({ id, content, isEditing, onDelete, onUpdate,
                         backgroundColor: '#ffffff',
                       }}
                       data-testid={`input-alt-text-${id}`}
-                    />
-                  </div>
-                  
-                  <div style={{ marginBottom: '12px' }}>
-                    <label style={{ 
-                      display: 'block', 
-                      fontFamily: 'Arial, sans-serif', 
-                      fontSize: '12px', 
-                      color: '#737373',
-                      marginBottom: '4px',
-                      fontWeight: 600,
-                    }}>
-                      Link URL (optional - for videos):
-                    </label>
-                    <input
-                      type="text"
-                      value={content.linkUrl || ''}
-                      onChange={(e) => onUpdate?.({ ...content, linkUrl: e.target.value })}
-                      placeholder="https://youtube.com/watch?v=..."
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        fontFamily: 'Arial, sans-serif',
-                        fontSize: '13px',
-                        border: '1px solid #D4D4D4',
-                        borderRadius: '4px',
-                        color: '#262626',
-                        backgroundColor: '#ffffff',
-                      }}
-                      data-testid={`input-link-url-${id}`}
                     />
                   </div>
                   
