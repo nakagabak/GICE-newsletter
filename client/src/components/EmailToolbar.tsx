@@ -1,8 +1,8 @@
-import { Download, Save, FileText, Plus, FolderOpen, FilePenLine, Code, Copy, Check } from "lucide-react";
+import { Download, Save, FileText, Plus, FolderOpen, FilePenLine, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { type EmailTemplate, type EmailBlock } from "@shared/schema";
+import { type EmailTemplate } from "@shared/schema";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,16 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { useState } from "react";
-import { generateEmailHtml } from "@/lib/generateEmailHtml";
 
 interface EmailToolbarProps {
   templateName: string;
@@ -27,12 +18,13 @@ interface EmailToolbarProps {
   onSave: () => void;
   onSaveDraft: () => void;
   onExport: () => void;
+  onSend: () => void;
   onNew: () => void;
   templates: EmailTemplate[];
   onLoadTemplate: (template: EmailTemplate) => void;
   isSaving?: boolean;
   isSavingDraft?: boolean;
-  blocks: EmailBlock[];
+  isSending?: boolean;
 }
 
 export default function EmailToolbar({ 
@@ -41,26 +33,15 @@ export default function EmailToolbar({
   onSave, 
   onSaveDraft,
   onExport,
+  onSend,
   onNew,
   templates,
   onLoadTemplate,
   isSaving,
   isSavingDraft,
-  blocks
+  isSending
 }: EmailToolbarProps) {
-  const [showHtmlDialog, setShowHtmlDialog] = useState(false);
-  const [copied, setCopied] = useState(false);
-  
-  const htmlCode = generateEmailHtml(blocks || []);
-  
-  const handleCopyHtml = async () => {
-    await navigator.clipboard.writeText(htmlCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-  
   return (
-    <>
     <div className="h-16 border-b border-border bg-card flex items-center justify-between px-6 gap-4">
       <div className="flex items-center gap-3 flex-1">
         <FileText className="h-5 w-5 text-primary" />
@@ -142,15 +123,16 @@ export default function EmailToolbar({
           {isSaving ? 'Saving...' : 'Save'}
         </Button>
         <Button
-          variant="outline"
-          onClick={() => setShowHtmlDialog(true)}
-          data-testid="button-view-html"
+          variant="default"
+          onClick={onSend}
+          disabled={isSending}
+          data-testid="button-send"
         >
-          <Code className="h-4 w-4 mr-2" />
-          View HTML
+          <Send className="h-4 w-4 mr-2" />
+          {isSending ? 'Sending...' : 'Send Email'}
         </Button>
         <Button
-          variant="default"
+          variant="outline"
           onClick={onExport}
           data-testid="button-export"
         >
@@ -159,43 +141,5 @@ export default function EmailToolbar({
         </Button>
       </div>
     </div>
-    
-    <Dialog open={showHtmlDialog} onOpenChange={setShowHtmlDialog}>
-      <DialogContent className="max-w-3xl max-h-[80vh]">
-        <DialogHeader>
-          <DialogTitle>Email HTML Code</DialogTitle>
-          <DialogDescription>
-            Copy this HTML code and paste it into Gmail, Outlook, or any email client.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <div className="relative">
-            <pre className="bg-muted p-4 rounded-lg overflow-auto max-h-96 text-xs">
-              <code>{htmlCode}</code>
-            </pre>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleCopyHtml}
-              className="absolute top-2 right-2"
-              data-testid="button-copy-html"
-            >
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4 mr-2" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-    </>
   );
 }
