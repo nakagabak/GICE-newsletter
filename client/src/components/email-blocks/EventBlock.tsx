@@ -95,34 +95,46 @@ export default function EventBlock({ id, content, isEditing, onDelete, onUpdate 
               
               {isEditing && (
                 <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <input
-                    type="text"
-                    value={content.linkText || ''}
-                    onChange={(e) => onUpdate?.({ ...content, linkText: e.target.value })}
-                    placeholder="Link text (e.g., Learn More →)"
-                    style={{
-                      fontFamily: 'Arial, sans-serif',
-                      fontSize: '14px',
-                      padding: '8px',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '4px',
-                    }}
-                    data-testid={`input-event-link-text-${id}`}
-                  />
-                  <input
-                    type="text"
-                    value={content.link || ''}
-                    onChange={(e) => onUpdate?.({ ...content, link: e.target.value })}
-                    placeholder="Link URL (e.g., https://example.com)"
-                    style={{
-                      fontFamily: 'Arial, sans-serif',
-                      fontSize: '14px',
-                      padding: '8px',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '4px',
-                    }}
-                    data-testid={`input-event-link-url-${id}`}
-                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label htmlFor={`event-link-text-${id}`} style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px', color: '#737373' }}>
+                      Link text (e.g., Learn More →)
+                    </label>
+                    <input
+                      id={`event-link-text-${id}`}
+                      type="text"
+                      value={content.linkText || ''}
+                      onChange={(e) => onUpdate?.({ ...content, linkText: e.target.value })}
+                      placeholder="Link text (e.g., Learn More →)"
+                      style={{
+                        fontFamily: 'Arial, sans-serif',
+                        fontSize: '14px',
+                        padding: '8px',
+                        border: '1px solid #e5e5e5',
+                        borderRadius: '4px',
+                      }}
+                      data-testid={`input-event-link-text-${id}`}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label htmlFor={`event-link-url-${id}`} style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px', color: '#737373' }}>
+                      Link URL (e.g., https://example.com)
+                    </label>
+                    <input
+                      id={`event-link-url-${id}`}
+                      type="text"
+                      value={content.link || ''}
+                      onChange={(e) => onUpdate?.({ ...content, link: e.target.value })}
+                      placeholder="Link URL (e.g., https://example.com)"
+                      style={{
+                        fontFamily: 'Arial, sans-serif',
+                        fontSize: '14px',
+                        padding: '8px',
+                        border: '1px solid #e5e5e5',
+                        borderRadius: '4px',
+                      }}
+                      data-testid={`input-event-link-url-${id}`}
+                    />
+                  </div>
                 </div>
               )}
               
